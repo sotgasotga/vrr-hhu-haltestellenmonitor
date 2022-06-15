@@ -1,9 +1,9 @@
 version: 16
 jobs:
-- name: Push to Public Git Repos
+- name: Push to Github
   steps:
   - !PushRepository
-    name: Push to Github
+    name: Push
     remoteUrl: https://github.com/sotgasotga/vrr-hhu-haltestellenmonitor.git
     userName: sotgasotga
     passwordSecret: token
@@ -13,6 +13,23 @@ jobs:
   triggers:
   - !BranchUpdateTrigger {}
   - !TagCreateTrigger {}
+  retryCondition: never
+  maxRetries: 3
+  retryDelay: 30
+  cpuRequirement: 250
+  memoryRequirement: 256
+  timeout: 3600
+- name: Pull from Github
+  steps:
+  - !PullRepository
+    name: Pull
+    remoteUrl: https://github.com/sotgasotga/vrr-hhu-haltestellenmonitor.git
+    userName: sotgasotga
+    passwordSecret: token
+    refs: refs/heads/* refs/tags/*
+    withLfs: false
+    force: false
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
   retryCondition: never
   maxRetries: 3
   retryDelay: 30
